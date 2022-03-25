@@ -1,0 +1,60 @@
+.control-panel {
+  background-color: #fff;
+  padding: 1rem;
+
+  .column-counter {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgb(221, 160, 160);
+    padding: 1rem;
+
+    h3 {
+      margin: 0 0 0.5rem 0;
+    }
+
+    input {
+      height: 1.6rem;
+    }
+
+    > button {
+      height: 2rem;
+      padding: 0 1rem;
+      background-color: azure;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+
+      &:first-of-type {
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    button {
+      transition: @standard-transition;
+
+      &:hover {
+        background-color: antiquewhite;
+      }
+    }
+
+    .counter {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+
+      span {
+        padding: 0 1rem;
+      }
+
+      button {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 2rem;
+        border: 0.1rem solid black;
+        cursor: pointer;
+      }
+    }
+  }
+}
