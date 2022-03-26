@@ -7,8 +7,9 @@
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    background-color: rgb(221, 160, 160);
+    background-color: @color-2;
     padding: 1rem;
+    color: #fff;
 
     h3 {
       margin: 0 0 0.5rem 0;
@@ -21,10 +22,7 @@
     > button {
       height: 2rem;
       padding: 0 1rem;
-      background-color: azure;
-      border: none;
-      cursor: pointer;
-      text-transform: uppercase;
+      border-radius: 1rem;
 
       &:first-of-type {
         margin-bottom: 0.5rem;
@@ -33,9 +31,14 @@
 
     button {
       transition: @standard-transition;
+      background-color: @color-1;
+      border: none;
+      color: #fff;
+      text-transform: uppercase;
+      cursor: pointer;
 
       &:hover {
-        background-color: antiquewhite;
+        background-color: @color-3;
       }
     }
 
@@ -52,8 +55,6 @@
         width: 2rem;
         height: 2rem;
         border-radius: 2rem;
-        border: 0.1rem solid black;
-        cursor: pointer;
       }
     }
   }

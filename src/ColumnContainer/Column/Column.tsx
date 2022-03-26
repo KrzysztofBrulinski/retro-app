@@ -6,6 +6,8 @@ import {
   useEffect,
 } from "react";
 
+import Card from "../Card/Card";
+
 type Props = {
   columnIndex: number;
   columnTitle: string;
@@ -14,12 +16,19 @@ type Props = {
 const Column: FunctionComponent<Props> = ({ columnIndex, columnTitle }) => {
   const [startTyping, setStartTyping] = useState(false as boolean);
   const [title, setTitle] = useState("" as string);
+  const [cards, setCards] = useState([] as number[]);
   const inputTitle = useRef<HTMLInputElement>(null);
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setTitle(event.target.value);
   };
+
+  const addNewCard = () => setCards([...cards, cards.length]);
+
+  useEffect(() => {
+    console.log("cards", cards);
+  }, [cards]);
 
   useEffect(() => {
     if (startTyping && inputTitle?.current) {
@@ -34,9 +43,9 @@ const Column: FunctionComponent<Props> = ({ columnIndex, columnTitle }) => {
   return (
     <div className="column" datatype={`column-${columnIndex}`}>
       <div className="title-section">
-        <div className="card-color"></div>
+        <div className={`card-color set-${columnIndex % 5}`}></div>
         {!startTyping ? (
-          <button onClick={() => setStartTyping(true)}>
+          <button title="Change title" onClick={() => setStartTyping(true)}>
             <h3 className="card-title">{title || "Type title here"}</h3>
           </button>
         ) : (
@@ -47,11 +56,27 @@ const Column: FunctionComponent<Props> = ({ columnIndex, columnTitle }) => {
               type="text"
               ref={inputTitle}
             ></input>
-            <button onClick={() => setStartTyping(false)} className="save">
+            <button
+              title="Confirm"
+              onClick={() => setStartTyping(false)}
+              className="save"
+            >
               OK
             </button>
           </form>
         )}
+      </div>
+      <button title="Add new card" onClick={addNewCard}>
+        + Add new card
+      </button>
+
+      <div className="cards">
+        {cards.map((index) => (
+          <Card
+            {...{ columnIndex: columnIndex % 5, cardIndex: index }}
+            key={index}
+          />
+        ))}
       </div>
     </div>
   );

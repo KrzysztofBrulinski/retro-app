@@ -36,12 +36,17 @@ const ControlPanel: FunctionComponent<Props> = ({
         <h3>Enter columns number for your dream retro</h3>
 
         <div className="counter">
-          <button onClick={decrease}>-</button>
+          <button title="Decrease" onClick={decrease}>
+            -
+          </button>
           <span>{columnsNumber}</span>
-          <button onClick={increase}>+</button>
+          <button title="Increase" onClick={increase}>
+            +
+          </button>
         </div>
 
         <button
+          title="Generate board"
           onClick={() => {
             setColumns(columnsNumber);
             setDefaultSet(false);
@@ -51,7 +56,9 @@ const ControlPanel: FunctionComponent<Props> = ({
         </button>
 
         <h3>Or try default set :)</h3>
-        <button onClick={() => setDefaultSet(true)}>Default</button>
+        <button title="Default board" onClick={() => setDefaultSet(true)}>
+          Default
+        </button>
       </div>
     </div>
   );
