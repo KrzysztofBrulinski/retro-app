@@ -29,14 +29,17 @@ const ControlPanel: FunctionComponent = () => {
   };
 
   const setDefaultSet = () => {
-    const defaultColumns = [
-      { id: 0, title: "One word" },
-      { id: 1, title: "Went well" },
-      { id: 2, title: "To improve" },
-      { id: 3, title: "Actions" },
-    ];
+    if (mainState.columns.length === 0) {
+      const defaultColumns = [
+        { id: 0, title: "One word" },
+        { id: 1, title: "Went well" },
+        { id: 2, title: "To improve" },
+        { id: 3, title: "Actions" },
+      ];
 
-    updateMainState({ ...mainState, columns: defaultColumns });
+      mainState.columns = defaultColumns;
+      updateMainState({ ...mainState });
+    }
   };
 
   const generateColumns = () => {
@@ -49,9 +52,10 @@ const ControlPanel: FunctionComponent = () => {
         columns.push({ id: i, title: "" });
       }
 
+      mainState.columns = [...mainState.columns, ...columns];
+
       updateMainState({
         ...mainState,
-        columns: [...mainState.columns, ...columns],
       });
     }
   };
