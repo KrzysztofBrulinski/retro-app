@@ -1,19 +1,29 @@
 import { FunctionComponent, useEffect, useState, useRef } from "react";
 
+import {
+  useMainState,
+  useMainStateUpdate,
+} from "../../Context/MainContext/MainContext";
 type Props = {
-  columnIndex: number;
-  cardIndex: number;
+  columnId: number;
+  cardId: number;
+  cardText: string;
+  cardLikes: number;
 };
 
-const Card: FunctionComponent<Props> = ({ columnIndex, cardIndex }) => {
-  const [cardText, setCardText] = useState("" as string);
-  const [votesNumber, setVotesNumber] = useState(0 as number);
+const Card: FunctionComponent<Props> = ({
+  columnId,
+  cardId,
+  cardText,
+  cardLikes,
+}) => {
   const [editTextArea, setEditTextArea] = useState(true as boolean);
   const textArea = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    console.log("index", columnIndex);
-  }, [columnIndex]);
+  const mainState = useMainState();
+  const updateMainState = useMainStateUpdate();
+
+  const cssClassID = columnId % 5;
 
   useEffect(() => {
     if (textArea?.current) {
@@ -21,19 +31,24 @@ const Card: FunctionComponent<Props> = ({ columnIndex, cardIndex }) => {
     }
   }, [textArea]);
 
+  const setLikes = () => {
+    mainState.cards[cardId].likes = cardLikes + 1;
+    updateMainState({ ...mainState });
+  };
+
+  const setText = () => {
+    mainState.cards[cardId].text = textArea?.current?.value || "";
+    updateMainState({ ...mainState });
+    setEditTextArea(false);
+  };
+
   return (
-    <div className={`card-container set-${columnIndex}`}>
+    <div className={`card-container set-${cssClassID}`}>
       <div className="card-header">
-        <p>{`#${cardIndex + 1}`}</p>
+        <p>{`#${cardId + 1}`}</p>
 
         <div className="like-btn">
-          <button
-            onClick={() => {
-              console.log("clicked");
-              setVotesNumber(votesNumber + 1);
-            }}
-            title="Vote"
-          >
+          <button onClick={setLikes} title="Vote">
             <svg width="15" height="15" viewBox="0 0 15 15">
               <g fill="none">
                 <path
@@ -47,7 +62,7 @@ const Card: FunctionComponent<Props> = ({ columnIndex, cardIndex }) => {
               </g>
             </svg>
           </button>
-          <p>{votesNumber > 0 ? votesNumber : ""}</p>
+          <p>{cardLikes > 0 ? cardLikes : ""}</p>
         </div>
       </div>
 
@@ -55,10 +70,7 @@ const Card: FunctionComponent<Props> = ({ columnIndex, cardIndex }) => {
         {editTextArea ? (
           <form>
             <textarea
-              onBlur={() => {
-                setCardText(textArea?.current?.value || "");
-                setEditTextArea(false);
-              }}
+              onBlur={setText}
               ref={textArea}
               name="retro-text"
             ></textarea>

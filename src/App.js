@@ -1,10 +1,11 @@
 import RetroMainPage from "./RetroMainPage/RetroMainPage";
+import MainContext from "./Context/MainContext/MainContext";
 
 const App = () => {
   return (
-    <div>
+    <MainContext>
       <RetroMainPage />
-    </div>
+    </MainContext>
   );
 };
 

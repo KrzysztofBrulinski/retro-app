@@ -1,22 +1,20 @@
-import { useState, FunctionComponent } from "react";
+import { useState, FunctionComponent, useEffect } from "react";
+import {
+  useMainState,
+  useMainStateUpdate,
+} from "../Context/MainContext/MainContext";
 
-type Props = {
-  setColumns: (num: number) => void;
-  setDefaultSet: (flag: boolean) => void;
-};
-
-const ControlPanel: FunctionComponent<Props> = ({
-  setColumns,
-  setDefaultSet,
-}) => {
+const ControlPanel: FunctionComponent = () => {
   const maxColumnsNumber = 10;
   const minColumnsNumber = 1;
-
   const [columnsNumber, setColumnsNumber] = useState(minColumnsNumber);
+
+  const mainState = useMainState();
+  const updateMainState = useMainStateUpdate();
 
   const decrease = () => {
     if (columnsNumber === minColumnsNumber) {
-      alert("Panie, nie da się!");
+      alert("Mniej niz 0");
     } else {
       setColumnsNumber(columnsNumber - 1);
     }
@@ -24,9 +22,37 @@ const ControlPanel: FunctionComponent<Props> = ({
 
   const increase = () => {
     if (columnsNumber === maxColumnsNumber) {
-      alert("Panie, nie da się!");
+      alert("Maksymalna ilosc kolumn");
     } else {
       setColumnsNumber(columnsNumber + 1);
+    }
+  };
+
+  const setDefaultSet = () => {
+    const defaultColumns = [
+      { id: 0, title: "One word" },
+      { id: 1, title: "Went well" },
+      { id: 2, title: "To improve" },
+      { id: 3, title: "Actions" },
+    ];
+
+    updateMainState({ ...mainState, columns: defaultColumns });
+  };
+
+  const generateColumns = () => {
+    const columnsLength = mainState.columns.length;
+
+    if (columnsNumber > columnsLength) {
+      const columns = [];
+
+      for (let i = columnsLength; i < columnsNumber; i++) {
+        columns.push({ id: i, title: "" });
+      }
+
+      updateMainState({
+        ...mainState,
+        columns: [...mainState.columns, ...columns],
+      });
     }
   };
 
@@ -45,18 +71,12 @@ const ControlPanel: FunctionComponent<Props> = ({
           </button>
         </div>
 
-        <button
-          title="Generate board"
-          onClick={() => {
-            setColumns(columnsNumber);
-            setDefaultSet(false);
-          }}
-        >
+        <button title="Generate board" onClick={generateColumns}>
           Generate
         </button>
 
-        <h3>Or try default set :)</h3>
-        <button title="Default board" onClick={() => setDefaultSet(true)}>
+        <h3>Or try default set</h3>
+        <button title="Default board" onClick={setDefaultSet}>
           Default
         </button>
       </div>

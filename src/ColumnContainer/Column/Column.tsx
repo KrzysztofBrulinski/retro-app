@@ -8,27 +8,38 @@ import {
 
 import Card from "../Card/Card";
 
+import {
+  useMainState,
+  useMainStateUpdate,
+} from "../../Context/MainContext/MainContext";
+
 type Props = {
-  columnIndex: number;
+  columnId: number;
   columnTitle: string;
 };
 
-const Column: FunctionComponent<Props> = ({ columnIndex, columnTitle }) => {
+const Column: FunctionComponent<Props> = ({ columnId, columnTitle }) => {
   const [startTyping, setStartTyping] = useState(false as boolean);
-  const [title, setTitle] = useState("" as string);
-  const [cards, setCards] = useState([] as number[]);
   const inputTitle = useRef<HTMLInputElement>(null);
+
+  const mainState = useMainState();
+  const updateMainState = useMainStateUpdate();
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    setTitle(event.target.value);
+    mainState.columns[columnId].title = event.target.value;
+
+    updateMainState({ ...mainState });
   };
 
-  const addNewCard = () => setCards([...cards, cards.length]);
+  const addNewCard = () => {
+    const cards = mainState.cards;
 
-  useEffect(() => {
-    console.log("cards", cards);
-  }, [cards]);
+    updateMainState({
+      ...mainState,
+      cards: [...cards, { id: cards.length, text: "", likes: 0, columnId }],
+    });
+  };
 
   useEffect(() => {
     if (startTyping && inputTitle?.current) {
@@ -36,22 +47,18 @@ const Column: FunctionComponent<Props> = ({ columnIndex, columnTitle }) => {
     }
   }, [startTyping]);
 
-  useEffect(() => {
-    setTitle(columnTitle);
-  }, [columnTitle]);
-
   return (
-    <div className="column" datatype={`column-${columnIndex}`}>
+    <div className="column" datatype={`column-${columnId}`}>
       <div className="title-section">
-        <div className={`card-color set-${columnIndex % 5}`}></div>
+        <div className={`card-color set-${columnId % 5}`}></div>
         {!startTyping ? (
           <button title="Change title" onClick={() => setStartTyping(true)}>
-            <h3 className="card-title">{title || "Type title here"}</h3>
+            <h3 className="card-title">{columnTitle || "Type title here"}</h3>
           </button>
         ) : (
           <form onSubmit={(e) => e.preventDefault()}>
             <input
-              value={title}
+              value={columnTitle}
               onChange={(e) => handleTitleChange(e)}
               type="text"
               ref={inputTitle}
@@ -71,12 +78,17 @@ const Column: FunctionComponent<Props> = ({ columnIndex, columnTitle }) => {
       </button>
 
       <div className="cards">
-        {cards.map((index) => (
-          <Card
-            {...{ columnIndex: columnIndex % 5, cardIndex: index }}
-            key={index}
-          />
-        ))}
+        {mainState.cards.map((card) =>
+          card.columnId === columnId ? (
+            <Card
+              columnId={card.columnId}
+              cardId={card.id}
+              cardText={card.text}
+              cardLikes={card.likes}
+              key={card.id}
+            />
+          ) : null
+        )}
       </div>
     </div>
   );
