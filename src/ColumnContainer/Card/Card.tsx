@@ -17,7 +17,7 @@ const Card: FunctionComponent<Props> = ({
   cardText,
   cardLikes,
 }) => {
-  const [editTextArea, setEditTextArea] = useState(true as boolean);
+  const [editTextArea, setEditTextArea] = useState(false as boolean);
   const textArea = useRef<HTMLTextAreaElement>(null);
 
   const mainState = useMainState();
@@ -25,11 +25,17 @@ const Card: FunctionComponent<Props> = ({
 
   const cssClassID = columnId % 5;
 
+  // focus on textarea after click
   useEffect(() => {
-    if (textArea?.current) {
+    if (textArea?.current && editTextArea) {
+      textArea.current.value = cardText;
       textArea.current.focus();
     }
-  }, [textArea]);
+  }, [textArea, editTextArea, cardText]);
+
+  useEffect(() => {
+    setEditTextArea(!cardText);
+  }, [cardText]);
 
   const setLikes = () => {
     mainState.cards[cardId].likes = cardLikes + 1;
@@ -37,7 +43,7 @@ const Card: FunctionComponent<Props> = ({
   };
 
   const setText = () => {
-    mainState.cards[cardId].text = textArea?.current?.value || "";
+    mainState.cards[cardId].text = textArea?.current?.value || cardText || "";
     updateMainState({ ...mainState });
     setEditTextArea(false);
   };
@@ -80,6 +86,29 @@ const Card: FunctionComponent<Props> = ({
             <h3>{cardText}</h3>
           </button>
         )}
+      </div>
+
+      <div className="movment">
+        <button
+          onClick={() => {
+            if (columnId > 0) {
+              mainState.cards[cardId].columnId = columnId - 1;
+              updateMainState({ ...mainState });
+            }
+          }}
+        >
+          left
+        </button>
+        <button
+          onClick={() => {
+            if (columnId < mainState.columns.length - 1) {
+              mainState.cards[cardId].columnId = columnId + 1;
+              updateMainState({ ...mainState });
+            }
+          }}
+        >
+          right
+        </button>
       </div>
     </div>
   );
